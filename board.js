@@ -44,30 +44,28 @@ class Board {
                 }
             }
         }
-        console.log(this.board)
     }
 
     show() {
-        let ctx = document.getElementById("chess").getContext("2d");
+        
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if (i % 2 == 0) {
                     if (j % 2 == 0) {
-                        ctx.fillStyle = '#FFFFFF'
+                        fill(255)
                     } else {
-                        ctx.fillStyle = '#000000'
+                        fill(0)
                     }
                 } else {
                     if (j % 2 == 0) {
-                        ctx.fillStyle = '#000000'
+                        fill(0)
                     } else {
-                        ctx.fillStyle = '#FFFFFF'
+                        fill(255)
                     }
                 }
-                ctx.fillRect(SPACING * i, SPACING * j, SPACING, SPACING);
+                rect(SPACING * i, SPACING * j, SPACING, SPACING);
             }
         }
-
         for (let x = 0; x < this.board.length; x++) {
             for (let y = 0; y < this.board.length; y++) {
 
