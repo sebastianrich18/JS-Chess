@@ -3,28 +3,48 @@ class Board {
 
     init() {
         for (let i = 0; i < 8; i++) {
-                this.board.push([null, null, null, null, null, null, null, null])
+            this.board.push([null, null, null, null, null, null, null, null])
         }
 
-        let pos = [['br', 'bk', 'bb', 'bq', 'bk', 'bb', 'bk', 'br'],
-                   ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
-                   ['', '', '', '', '', '', '', ''],
-                   ['', '', '', '', '', '', '', ''],
-                   ['', '', '', '', '', '', '', ''],
-                   ['', '', '', '', '', '', '', ''],
-                   ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp']
-                   ['wr', 'wk', 'wb', 'wq', 'wk', 'wb', 'wk', 'wr']]
+        let startingPos =
+            [['br', 'bk', 'bb', 'bq', 'bk', 'bb', 'bk', 'br'],
+            ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
+            ['wr', 'wk', 'wb', 'wq', 'wk', 'wb', 'wk', 'wr']]
 
         for (let i = 0; i < 8; i++) {
-           for(let j = 0; j < 8; j++) {
-               if(pos[i][j] != '') {
-                    console.log(this.board[i][j])
-                    console.log(pos[i][j].split('')[0], pos[i][j].split('')[1], i, j)
-                    this.board[i][j] = new Piece(pos[i][j].split('')[0], pos[i][j].split('')[1], i, j)
-                    console.log(this.board[i][j])
-               }
-           }
+            for (let j = 0; j < 8; j++) {
+                if (startingPos[i][j] != '') {
+                    let color = startingPos[i][j].split('')[0];
+                    let type = startingPos[i][j].split('')[1]
+                    switch (type) {
+                        case 'p':
+                            this.board[i][j] = new Pawn(color, type, i, j);
+                            break;
+                        case 'k':
+                            this.board[i][j] = new King(color, type, i, j);
+                            break;
+                        case 'b':
+                            this.board[i][j] = new Bishop(color, type, i, j);
+                            break;
+                        case 'q':
+                            this.board[i][j] = new Queen(color, type, i, j);
+                            break;
+                        case 'r':
+                            this.board[i][j] = new Rook(color, type, i, j);
+                            break;
+                        case 'n':
+                            this.board[i][j] = new Knight(color, type, i, j);
+                            break;
+                    }
+                }
+            }
         }
+        console.log(this.board)
     }
 
     show() {
@@ -44,7 +64,7 @@ class Board {
                         ctx.fillStyle = '#FFFFFF'
                     }
                 }
-                ctx.fillRect(SPACING * j, SPACING * i, SPACING, SPACING);
+                ctx.fillRect(SPACING * i, SPACING * j, SPACING, SPACING);
             }
         }
 
