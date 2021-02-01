@@ -7,14 +7,14 @@ class Board {
         }
 
         let startingPos =
-            [['br', 'bk', 'bb', 'bq', 'bk', 'bb', 'bk', 'br'],
+            [['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn', 'br'],
             ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
-            ['wr', 'wk', 'wb', 'wq', 'wk', 'wb', 'wk', 'wr']]
+            ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']]
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -77,7 +77,6 @@ class Board {
     }
 
     move(x1, y1, x2, y2) {
-        console.log('moveing')
         let piece = this.board[y1][x1];
         piece.matrixX = y2;
         piece.matrixY = x2;

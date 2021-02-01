@@ -26,7 +26,7 @@ class Pawn extends Piece {
     }
 
     canMove(board, x, y) {
-        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+        // console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
         if (this.color == "w") {
             if (this.matrixX - 1 == x && this.matrixY == y && board[x][y] == null) {
                 this.hasMoved = true;
@@ -43,7 +43,6 @@ class Pawn extends Piece {
 
             } else {
                 return false;
-
             }
         } else {
             if (this.matrixX + 1 == x && this.matrixY == y && board[x][y] == null) {
@@ -69,28 +68,91 @@ class King extends Piece {
         super(color, type, x, y);
         this.hasMoved = false
     }
+    canMove(board, x, y) {
+        if (this.color == 'w') {
+
+        } else {
+            
+        }
+    }
 }
 class Queen extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
+    }
 
+    canMove(board, x, y) {
+        if (this.color == 'w') {
+
+        } else {
+            
+        }
     }
 }
 class Bishop extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
+    }
+    
+    canMove(board, x, y) {
+        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
 
+        if (this.color == 'w') {
+            let xDif = x - this.matrixX;
+            let yDif = y - this.matrixY;
+            let xDirection, yDirection;
+            if(xDif > 0) {
+                xDirection = 1
+            } else {
+                xDirection = -1
+            }
+            if(yDif > 0) {
+                yDirection = 1
+            } else {
+                yDirection = -1
+            }
+            if(Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color == 'b')) {
+                let tempX = this.matrixX + xDirection;
+                let tempY = this.matrixY + yDirection;
+                while(tempX != x && tempY != y){ // check if path to landing square is open
+                    console.log(tempX, tempY)
+                    if(board[tempX][tempY] != null) {
+                        return false
+                    } else {
+                        tempX += xDirection;
+                        tempY += yDirection;
+                    }
+                }
+                return true
+            }
+        } else {
+
+        }
     }
 }
 class Knight extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
+    }
 
+    canMove(board, x, y) {
+        if (this.color == 'w') {
+
+        } else {
+            
+        }
     }
 }
 class Rook extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
+    }
 
+    canMove(board, x, y) {
+        if (this.color == 'w') {
+
+        } else {
+            
+        }
     }
 }
