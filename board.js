@@ -75,4 +75,13 @@ class Board {
             }
         }
     }
+
+    move(x1, y1, x2, y2) {
+        console.log('moveing')
+        let piece = this.board[y1][x1];
+        piece.matrixX = y2;
+        piece.matrixY = x2;
+        this.board[y1][x1] = null;
+        this.board[y2][x2] = piece;
+    }
 }

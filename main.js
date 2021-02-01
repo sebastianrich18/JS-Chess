@@ -21,36 +21,41 @@ function setup() {
 
 function draw() {
     BOARD.show();
+    if(locked) {
+        BOARD.board[holdingPieceY][holdingPieceX].show() // make holding piece be drawn on top of everything else
+    }
 }
 
 function mousePressed() {
-    let mouseMatrixX = Math.floor(mouseX / SPACING);
-    let mouseMatrixY = Math.floor(mouseY / SPACING)
+    if (mouseX < WIDTH && mouseY < WIDTH) {
+        let mouseMatrixX = Math.floor(mouseX / SPACING);
+        let mouseMatrixY = Math.floor(mouseY / SPACING)
 
-    console.log(mouseMatrixX, mouseMatrixY)
+        // console.log(mouseMatrixX, mouseMatrixY)
 
-    if (BOARD.board[mouseMatrixY][mouseMatrixX] != null && !locked) {
-        console.log(mouseMatrixX, mouseMatrixY)
-        overPiece = true;
-        holdingPieceX = mouseMatrixY;
-        holdingPieceY = mouseMatrixX
+        if (BOARD.board[mouseMatrixY][mouseMatrixX] != null && !locked) {
+            // console.log(mouseMatrixX, mouseMatrixY)
+            overPiece = true;
+            holdingPieceX = mouseMatrixY;
+            holdingPieceY = mouseMatrixX
 
-    } else {
-        overPiece = false;
-    }
-    if (overPiece) {
-        locked = true;
-        holdingPieceX = mouseMatrixX;
-        holdingPieceY = mouseMatrixY;
-        
-    } else {
-        locked = false;
+        } else {
+            overPiece = false;
+        }
+        if (overPiece) {
+            locked = true;
+            holdingPieceX = mouseMatrixX;
+            holdingPieceY = mouseMatrixY;
+
+        } else {
+            locked = false;
+        }
     }
 
 }
 
 function mouseDragged(e) {
-    if(locked) {
+    if (locked) {
         BOARD.board[holdingPieceY][holdingPieceX].absX = mouseY - (SPACING / 2);
         BOARD.board[holdingPieceY][holdingPieceX].absY = mouseX - (SPACING / 2);
 
@@ -58,7 +63,19 @@ function mouseDragged(e) {
 }
 
 function mouseReleased() {
-    locked = false;
-    holdingPieceX = -1;
-    holdingPieceY = -1;
+    if (locked) {
+        locked = false;
+        landingX = Math.floor(mouseX / SPACING);
+        landingY = Math.floor(mouseY / SPACING);
+        if (BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX)) {
+            // BOARD.board[holdingPieceY][holdingPieceX].move(landingX, landingY)
+            console.log('can move')
+            BOARD.move(holdingPieceX, holdingPieceY, landingX, landingY)
+        } else {
+            console.log('cant move')
+        }
+        holdingPieceX = -1;
+        holdingPieceY = -1;
+    }
+
 }

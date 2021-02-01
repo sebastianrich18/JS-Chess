@@ -25,9 +25,42 @@ class Pawn extends Piece {
         this.hasMoved = false;
     }
 
-    move(board, x, y) {
-        if (this.matrixX == x && this.matrixX + 1 == y && board[x][y] == null) {
-            console.log('can move')
+    canMove(board, x, y) {
+        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+        if (this.color == "w") {
+            if (this.matrixX - 1 == x && this.matrixY == y && board[x][y] == null) {
+                this.hasMoved = true;
+                return true
+
+            } else if (this.matrixX - 2 == x && this.matrixY == y && board[x][y] == null && !this.hasMoved && board[x + 1][y] == null) {
+                this.hasMoved = true
+                return true
+
+            } else if (((this.matrixX - 1 == x && this.matrixY + 1 == y) || (this.matrixX - 1 == x && this.matrixY - 1 == y)) && board[x][y] != null & board[x][y].color == 'b'){
+                // console.log('takes')
+                this.hasMoved = true
+                return true;
+
+            } else {
+                return false;
+
+            }
+        } else {
+            if (this.matrixX + 1 == x && this.matrixY == y && board[x][y] == null) {
+                this.hasMoved = true
+                return true
+
+            } else if (this.matrixX + 2 == x && this.matrixY == y && board[x][y] == null && !this.hasMoved && board[x - 1][y] == null) {
+                this.hasMoved = true
+                return true
+            } else if (((this.matrixX + 1 == x && this.matrixY - 1 == y) || (this.matrixX + 1 == x && this.matrixY + 1 == y)) && board[x][y] != null & board[x][y].color == 'w'){
+                // console.log('takes')
+                this.hasMoved = true
+                return true;
+
+            } else {
+                return false;
+            }
         }
     }
 }
