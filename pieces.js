@@ -36,7 +36,7 @@ class Pawn extends Piece {
                 this.hasMoved = true
                 return true
 
-            } else if (((this.matrixX - 1 == x && this.matrixY + 1 == y) || (this.matrixX - 1 == x && this.matrixY - 1 == y)) && board[x][y] != null & board[x][y].color == 'b'){
+            } else if (((this.matrixX - 1 == x && this.matrixY + 1 == y) || (this.matrixX - 1 == x && this.matrixY - 1 == y)) && board[x][y] != null & board[x][y].color == 'b') {
                 // console.log('takes')
                 this.hasMoved = true
                 return true;
@@ -52,7 +52,7 @@ class Pawn extends Piece {
             } else if (this.matrixX + 2 == x && this.matrixY == y && board[x][y] == null && !this.hasMoved && board[x - 1][y] == null) {
                 this.hasMoved = true
                 return true
-            } else if (((this.matrixX + 1 == x && this.matrixY - 1 == y) || (this.matrixX + 1 == x && this.matrixY + 1 == y)) && board[x][y] != null & board[x][y].color == 'w'){
+            } else if (((this.matrixX + 1 == x && this.matrixY - 1 == y) || (this.matrixX + 1 == x && this.matrixY + 1 == y)) && board[x][y] != null & board[x][y].color == 'w') {
                 // console.log('takes')
                 this.hasMoved = true
                 return true;
@@ -72,7 +72,7 @@ class King extends Piece {
         if (this.color == 'w') {
 
         } else {
-            
+
         }
     }
 }
@@ -85,7 +85,7 @@ class Queen extends Piece {
         if (this.color == 'w') {
 
         } else {
-            
+
         }
     }
 }
@@ -93,40 +93,29 @@ class Bishop extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
     }
-    
+
     canMove(board, x, y) {
         console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
-
-        if (this.color == 'w') {
-            let xDif = x - this.matrixX;
-            let yDif = y - this.matrixY;
-            let xDirection, yDirection;
-            if(xDif > 0) {
-                xDirection = 1
-            } else {
-                xDirection = -1
-            }
-            if(yDif > 0) {
-                yDirection = 1
-            } else {
-                yDirection = -1
-            }
-            if(Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color == 'b')) {
-                let tempX = this.matrixX + xDirection;
-                let tempY = this.matrixY + yDirection;
-                while(tempX != x && tempY != y){ // check if path to landing square is open
-                    console.log(tempX, tempY)
-                    if(board[tempX][tempY] != null) {
-                        return false
-                    } else {
-                        tempX += xDirection;
-                        tempY += yDirection;
-                    }
+        let xDif = x - this.matrixX;
+        let yDif = y - this.matrixY;
+        let xDirection, yDirection;
+        
+        (xDif > 0) ? xDirection = 1 : xDirection = -1
+        (yDif > 0) ? yDirection = 1 : yDirection = -1
+        
+        if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
+            let tempX = this.matrixX + xDirection;
+            let tempY = this.matrixY + yDirection;
+            while (tempX != x && tempY != y) { // check if path to landing square is open
+                console.log(tempX, tempY)
+                if (board[tempX][tempY] != null) {
+                    return false
+                } else {
+                    tempX += xDirection;
+                    tempY += yDirection;
                 }
-                return true
             }
-        } else {
-
+            return true
         }
     }
 }
@@ -139,7 +128,7 @@ class Knight extends Piece {
         if (this.color == 'w') {
 
         } else {
-            
+
         }
     }
 }
@@ -152,7 +141,7 @@ class Rook extends Piece {
         if (this.color == 'w') {
 
         } else {
-            
+
         }
     }
 }
