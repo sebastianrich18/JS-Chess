@@ -69,10 +69,11 @@ class King extends Piece {
         this.hasMoved = false
     }
     canMove(board, x, y) {
-        if (this.color == 'w') {
-
-        } else {
-
+        let xDif = x - this.matrixX;
+        let yDif = y - this.matrixY;
+        if ((Math.abs(xDif) <= 1 && Math.abs(yDif) <= 1) && (board[x][y] == null || board[x][y].color != this.color)) {
+            this.hasMoved = true;
+            return true;
         }
     }
 }
@@ -153,7 +154,7 @@ class Bishop extends Piece {
             let tempX = this.matrixX + xDirection;
             let tempY = this.matrixY + yDirection;
             while (tempX != x && tempY != y) { // check if path to landing square is open
-                console.log(tempX, tempY)
+                // console.log(tempX, tempY)
                 if (board[tempX][tempY] != null) {
                     return false
                 } else {

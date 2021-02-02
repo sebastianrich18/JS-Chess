@@ -1,6 +1,6 @@
 const WIDTH = 600
 const SPACING = WIDTH / 8;
-const BOARD = new Board;
+const BOARD = new Board();
 let locked = false
 let overPiece = false;
 let holdingPieceX;
@@ -68,7 +68,6 @@ function mouseReleased() {
         landingX = Math.floor(mouseX / SPACING);
         landingY = Math.floor(mouseY / SPACING);
         if (BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX)) {
-            // BOARD.board[holdingPieceY][holdingPieceX].move(landingX, landingY)
             console.log('can move')
             BOARD.move(holdingPieceX, holdingPieceY, landingX, landingY)
         } else {
