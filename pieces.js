@@ -138,10 +138,38 @@ class Rook extends Piece {
     }
 
     canMove(board, x, y) {
-        if (this.color == 'w') {
-
+        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+        
+        if ((x == this.matrixX || y == this.matrixY) && (board[x][y] == null || board[x][y].color != this.color)) {
+            if(this.matrixX == x) {
+                // console.log('moveing sideways')
+                let yDir = (this.matrixY - y < 0) ? 1 : -1;
+                let tempY = this.matrixY + yDir;
+                while(tempY != y) {
+                    console.log(x, tempY, yDir)
+                    if(board[x][tempY] != null) {
+                        return false;
+                    }
+                    tempY += yDir;
+                }
+                return true;
+            } else if (this.matrixY == y) {
+                // console.log('moveing forward')
+                let xDir = (this.matrixX - x < 0) ? 1 : -1;
+                let tempX = this.matrixX + xDir;
+                while(tempX != x) {
+                    console.log(tempX, y, xDir)
+                    if(board[tempX][y] != null) {
+                        return false;
+                    }
+                    tempX += xDir;
+                }
+                return true;
+            } else {
+                return false;
+            }
         } else {
-
+            return false;
         }
     }
 }
