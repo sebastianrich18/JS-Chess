@@ -141,13 +141,13 @@ class Bishop extends Piece {
     }
 
     canMove(board, x, y) {
-        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+        // console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY);
         let xDif = x - this.matrixX;
         let yDif = y - this.matrixY;
         let xDirection, yDirection;
 
-        (xDif > 0) ? xDirection = 1 : xDirection = -1
-            (yDif > 0) ? yDirection = 1 : yDirection = -1
+        (xDif > 0) ? xDirection = 1 : xDirection = -1;
+        (yDif > 0) ? yDirection = 1 : yDirection = -1;
 
         if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
             let tempX = this.matrixX + xDirection;
@@ -171,10 +171,12 @@ class Knight extends Piece {
     }
 
     canMove(board, x, y) {
-        if (this.color == 'w') {
-
+        let xDist = this.matrixX - x;
+        let yDist = this.matrixY - y;
+        if (((Math.abs(xDist) == 2 && Math.abs(yDist) == 1) || (Math.abs(xDist) == 1 && Math.abs(yDist) == 2)) && (board[x][y] == null || board[x][y].color != this.color)) {
+            return true;
         } else {
-
+            return false;
         }
     }
 }
