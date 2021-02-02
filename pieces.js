@@ -82,10 +82,56 @@ class Queen extends Piece {
     }
 
     canMove(board, x, y) {
-        if (this.color == 'w') {
+        let xDif = x - this.matrixX;
+        let yDif = y - this.matrixY;
+        let xDirection, yDirection;
 
+        (xDif > 0) ? xDirection = 1 : xDirection = -1;
+        (yDif > 0) ? yDirection = 1 : yDirection = -1;
+
+        if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
+            // console.log('moveing diag')
+            let tempX = this.matrixX + xDirection;
+            let tempY = this.matrixY + yDirection;
+            while (tempX != x && tempY != y) { // check if path to landing square is open
+                if (board[tempX][tempY] != null) {
+                    return false
+                } else {
+                    tempX += xDirection;
+                    tempY += yDirection;
+                }
+            }
+            return true
+        } else if ((x == this.matrixX || y == this.matrixY) && (board[x][y] == null || board[x][y].color != this.color)) {
+            if (this.matrixX == x) {
+                // console.log('moveing sideways')
+                let yDir = (this.matrixY - y < 0) ? 1 : -1;
+                let tempY = this.matrixY + yDir;
+                while (tempY != y) {
+                    console.log(x, tempY, yDir)
+                    if (board[x][tempY] != null) {
+                        return false;
+                    }
+                    tempY += yDir;
+                }
+                return true;
+            } else if (this.matrixY == y) {
+                // console.log('moveing forward')
+                let xDir = (this.matrixX - x < 0) ? 1 : -1;
+                let tempX = this.matrixX + xDir;
+                while (tempX != x) {
+                    console.log(tempX, y, xDir)
+                    if (board[tempX][y] != null) {
+                        return false;
+                    }
+                    tempX += xDir;
+                }
+                return true;
+            } else {
+                return false;
+            }
         } else {
-
+            return false;
         }
     }
 }
@@ -99,10 +145,10 @@ class Bishop extends Piece {
         let xDif = x - this.matrixX;
         let yDif = y - this.matrixY;
         let xDirection, yDirection;
-        
+
         (xDif > 0) ? xDirection = 1 : xDirection = -1
-        (yDif > 0) ? yDirection = 1 : yDirection = -1
-        
+            (yDif > 0) ? yDirection = 1 : yDirection = -1
+
         if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
             let tempX = this.matrixX + xDirection;
             let tempY = this.matrixY + yDirection;
@@ -136,18 +182,16 @@ class Rook extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
     }
-
     canMove(board, x, y) {
         console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
-        
         if ((x == this.matrixX || y == this.matrixY) && (board[x][y] == null || board[x][y].color != this.color)) {
-            if(this.matrixX == x) {
+            if (this.matrixX == x) {
                 // console.log('moveing sideways')
                 let yDir = (this.matrixY - y < 0) ? 1 : -1;
                 let tempY = this.matrixY + yDir;
-                while(tempY != y) {
+                while (tempY != y) {
                     console.log(x, tempY, yDir)
-                    if(board[x][tempY] != null) {
+                    if (board[x][tempY] != null) {
                         return false;
                     }
                     tempY += yDir;
@@ -157,9 +201,9 @@ class Rook extends Piece {
                 // console.log('moveing forward')
                 let xDir = (this.matrixX - x < 0) ? 1 : -1;
                 let tempX = this.matrixX + xDir;
-                while(tempX != x) {
+                while (tempX != x) {
                     console.log(tempX, y, xDir)
-                    if(board[tempX][y] != null) {
+                    if (board[tempX][y] != null) {
                         return false;
                     }
                     tempX += xDir;
