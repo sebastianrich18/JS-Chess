@@ -47,7 +47,7 @@ class Board {
     }
 
     show() {
-        
+
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if (i % 2 == 0) {
@@ -78,9 +78,27 @@ class Board {
 
     move(x1, y1, x2, y2) {
         let piece = this.board[y1][x1];
+        // console.log(y1, x1)
+        // console.log(piece)
         piece.matrixX = y2;
         piece.matrixY = x2;
         this.board[y1][x1] = null;
         this.board[y2][x2] = piece;
+    }
+
+    castle(kx, ky, rx, ry, isKingSide) {
+        let rook = this.board[rx][ry];
+        if (isKingSide) {
+            this.move(ky, kx, ky + 2, kx);
+            rook.matrixX = kx;
+            rook.matrixY = ky + 1;
+            this.board[kx][ky + 1] = rook;
+        } else {
+            this.move(ky, kx, ky - 2, kx);
+            rook.matrixX = kx;
+            rook.matrixY = ky - 1;
+            this.board[kx][ky - 1] = rook;
+        }
+        console.log('castles')
     }
 }

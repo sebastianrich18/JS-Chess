@@ -74,6 +74,25 @@ class King extends Piece {
         if ((Math.abs(xDif) <= 1 && Math.abs(yDif) <= 1) && (board[x][y] == null || board[x][y].color != this.color)) {
             this.hasMoved = true;
             return true;
+        } else if (board[x][y] && !this.hasMoved && board[x][y].color == this.color &&  board[x][y].type == 'r') {
+            // console.log(this.matrixX, this.matrixY)
+            let yDif = y - this.matrixY;
+            let yDirection;
+            (yDif > 0) ? yDirection = 1 : yDirection = -1;
+            let tempY = this.matrixY + yDirection;
+            while(tempY != y) {
+                // console.log(x, tempY)
+                if(board[x][tempY] != null) {
+                    console.log('castle blocked by piece')
+                    return false;
+                }
+                tempY += yDirection;
+            }
+            if(yDirection == 1) {
+                BOARD.castle(this.matrixX, this.matrixY, x, y, true);
+            } else {
+                BOARD.castle(this.matrixX, this.matrixY, x, y, false);
+            }
         }
     }
 }
@@ -91,6 +110,9 @@ class Queen extends Piece {
         (yDif > 0) ? yDirection = 1 : yDirection = -1;
 
         if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
+            
+            // TODO add check to see if opponent is atacking any squares the king must move thru
+
             // console.log('moveing diag')
             let tempX = this.matrixX + xDirection;
             let tempY = this.matrixY + yDirection;
@@ -109,7 +131,7 @@ class Queen extends Piece {
                 let yDir = (this.matrixY - y < 0) ? 1 : -1;
                 let tempY = this.matrixY + yDir;
                 while (tempY != y) {
-                    console.log(x, tempY, yDir)
+                    // console.log(x, tempY, yDir)
                     if (board[x][tempY] != null) {
                         return false;
                     }
@@ -121,7 +143,7 @@ class Queen extends Piece {
                 let xDir = (this.matrixX - x < 0) ? 1 : -1;
                 let tempX = this.matrixX + xDir;
                 while (tempX != x) {
-                    console.log(tempX, y, xDir)
+                    // console.log(tempX, y, xDir)
                     if (board[tempX][y] != null) {
                         return false;
                     }
