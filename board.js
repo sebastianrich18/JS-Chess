@@ -11,7 +11,7 @@ class Board {
             ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', 'wb', '', '', ''],
+            ['', '', '', '', 'wk', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
             ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']]
@@ -82,6 +82,7 @@ class Board {
         // console.log(piece)
         piece.matrixX = y2;
         piece.matrixY = x2;
+        piece.hasMoved = true;
         this.board[y1][x1] = null;
         this.board[y2][x2] = piece;
     }
