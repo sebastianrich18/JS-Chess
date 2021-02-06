@@ -22,13 +22,17 @@ class Piece {
         console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
         let moves = this.getMoves(board);
         let included = false
-        for(let i=0; i<moves.length; i++) {
-            if(moves[i][0] == x && moves[i][1] == y) {
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i][0] == x && moves[i][1] == y) {
                 included = true;
             }
         }
         return included;
-     }
+    }
+
+    isInBounds(x, y) {
+        return (x < 8 && x >= 0 && y < 8 && y >= 0);
+    }
 
     getMoves(board) {
         let moves = [];
@@ -40,7 +44,7 @@ class Piece {
                     if (board[i][y] == null) {
                         moves.push([i, y]);
                     } else {
-                        if (board[i][y] != this.color) {
+                        if (board[i][y].color != this.color) {
                             moves.push([i, y]);
                             break
                         }
@@ -50,7 +54,7 @@ class Piece {
                     if (board[i][y] == null) {
                         moves.push([i, y]);
                     } else {
-                        if (board[i][y] != this.color);
+                        if (board[i][y].color != this.color);
                         moves.push([i, y]);
                         break;
                     }
@@ -59,7 +63,7 @@ class Piece {
                     if (board[x][i] == null) {
                         moves.push([x, i]);
                     } else {
-                        if (board[x][i] != this.color);
+                        if (board[x][i].color != this.color);
                         moves.push([x, i]);
                         break;
                     }
@@ -68,7 +72,7 @@ class Piece {
                     if (board[x][i] == null) {
                         moves.push([x, i]);
                     } else {
-                        (board[x][i] != this.color);
+                        (board[x][i].color != this.color);
                         moves.push([x, i]);
                         break;
                     }
@@ -83,6 +87,55 @@ class Piece {
             case 'p':
                 break;
             case 'b':
+                for (let i = 1; i < board.length; i++) { // front left
+                    if (board[x - i][y - i] == null) {
+                        moves.push([x - i, y - i]);
+                    } else {
+                        if (board[x - i][y - i].color != this.color) {
+                            moves.push([x - i, y - i]);
+                            break;
+                        }
+                    }
+                }
+                for (let i = 1; i < board.length; i++) { // front right
+                    if (!this.isInBounds(x - i, y + i)) {
+                        break;
+                    }
+                    if (board[x - i][y + i] == null) {
+                        moves.push([x - i, y + i]);
+                    } else {
+                        if (board[x - i][y + i].color != this.color) {
+                            moves.push([x - i, y + i]);
+                            break;
+                        }
+                    }
+                }
+                for (let i = 1; i < board.length; i++) { // back left
+                    if (!this.isInBounds(x + i, y - i)) {
+                        break;
+                    }
+                    if (board[x + i][y - i] == null) {
+                        moves.push([x + i, y - i]);
+                    } else {
+                        if (board[x + i][y - i].color != this.color) {
+                            moves.push([x + i, y - i]);
+                            break;
+                        }
+                    }
+                }
+                for (let i = 1; i < board.length; i++) { // back right
+                    if (!this.isInBounds(x + i, y + i)) {
+                        break;
+                    }
+                    if (board[x + i][y + i] == null) {
+                        moves.push([x + i, y + i]);
+                    } else {
+                        if (board[x + i][y + i].color != this.color) {
+                            moves.push([x + i, y + i]);
+                            break;
+                        }
+                    }
+                }
                 break;
         }
         console.log(moves)
@@ -194,8 +247,6 @@ class Queen extends Piece {
 
         if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
 
-            // TODO add check to see if opponent is atacking any squares the king must move thru
-
             // console.log('moveing diag')
             let tempX = this.matrixX + xDirection;
             let tempY = this.matrixY + yDirection;
@@ -246,30 +297,30 @@ class Bishop extends Piece {
         super(color, type, x, y);
     }
 
-    canMove(board, x, y) {
-        // console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY);
-        let xDif = x - this.matrixX;
-        let yDif = y - this.matrixY;
-        let xDirection, yDirection;
+    // canMove(board, x, y) {
+    //     // console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY);
+    //     let xDif = x - this.matrixX;
+    //     let yDif = y - this.matrixY;
+    //     let xDirection, yDirection;
 
-        (xDif > 0) ? xDirection = 1 : xDirection = -1;
-        (yDif > 0) ? yDirection = 1 : yDirection = -1;
+    //     (xDif > 0) ? xDirection = 1 : xDirection = -1;
+    //     (yDif > 0) ? yDirection = 1 : yDirection = -1;
 
-        if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
-            let tempX = this.matrixX + xDirection;
-            let tempY = this.matrixY + yDirection;
-            while (tempX != x && tempY != y) { // check if path to landing square is open
-                // console.log(tempX, tempY)
-                if (board[tempX][tempY] != null) {
-                    return false
-                } else {
-                    tempX += xDirection;
-                    tempY += yDirection;
-                }
-            }
-            return true
-        }
-    }
+    //     if (Math.abs(xDif) == Math.abs(yDif) && (board[x][y] == null || board[x][y].color != this.color)) {
+    //         let tempX = this.matrixX + xDirection;
+    //         let tempY = this.matrixY + yDirection;
+    //         while (tempX != x && tempY != y) { // check if path to landing square is open
+    //             // console.log(tempX, tempY)
+    //             if (board[tempX][tempY] != null) {
+    //                 return false
+    //             } else {
+    //                 tempX += xDirection;
+    //                 tempY += yDirection;
+    //             }
+    //         }
+    //         return true
+    //     }
+    // }
 }
 class Knight extends Piece {
     constructor(color, type, x, y) {
