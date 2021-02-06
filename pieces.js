@@ -18,13 +18,25 @@ class Piece {
         image(Piece.imgs[`${this.color}${this.type}`], this.absY, this.absX, SPACING, SPACING)
     }
 
+    canMove(board, x, y) {
+        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+        let moves = this.getMoves(board);
+        let included = false
+        for(let i=0; i<moves.length; i++) {
+            if(moves[i][0] == x && moves[i][1] == y) {
+                included = true;
+            }
+        }
+        return included;
+     }
+
     getMoves(board) {
         let moves = [];
         let x = this.matrixX;
         let y = this.matrixY;
         switch (this.type) {
-            case 'r':
-                for (let i = x - 1; i >= 0; i--) {
+            case 'r': // rook
+                for (let i = x - 1; i >= 0; i--) { // forward
                     if (board[i][y] == null) {
                         moves.push([i, y]);
                     } else {
@@ -34,7 +46,7 @@ class Piece {
                         }
                     }
                 }
-                for (let i = x + 1; i < board.length; i++) {
+                for (let i = x + 1; i < board.length; i++) { // backward
                     if (board[i][y] == null) {
                         moves.push([i, y]);
                     } else {
@@ -43,7 +55,7 @@ class Piece {
                         break;
                     }
                 }
-                for (let i = y - 1; i >= 0; i--) {
+                for (let i = y - 1; i >= 0; i--) { // left
                     if (board[x][i] == null) {
                         moves.push([x, i]);
                     } else {
@@ -52,7 +64,7 @@ class Piece {
                         break;
                     }
                 }
-                for (let i = y + 1; i < board.length; i++) {
+                for (let i = y + 1; i < board.length; i++) { // right
                     if (board[x][i] == null) {
                         moves.push([x, i]);
                     } else {
@@ -278,47 +290,4 @@ class Rook extends Piece {
     constructor(color, type, x, y) {
         super(color, type, x, y);
     }
-    canMove(board, x, y) {
-        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
-        let moves = this.getMoves(board);
-        let included = false
-        for(let i=0; i<moves.length; i++) {
-            if(moves[i][0] == x && moves[i][1] == y) {
-                included = true;
-            }
-        }
-        return included;
-
-    //     if ((x == this.matrixX || y == this.matrixY) && (board[x][y] == null || board[x][y].color != this.color)) {
-    //         if (this.matrixX == x) {
-    //             // console.log('moveing sideways')
-    //             let yDir = (this.matrixY - y < 0) ? 1 : -1;
-    //             let tempY = this.matrixY + yDir;
-    //             while (tempY != y) {
-    //                 // console.log(x, tempY, yDir)
-    //                 if (board[x][tempY] != null) {
-    //                     return false;
-    //                 }
-    //                 tempY += yDir;
-    //             }
-    //             return true;
-    //         } else if (this.matrixY == y) {
-    //             // console.log('moveing forward')
-    //             let xDir = (this.matrixX - x < 0) ? 1 : -1;
-    //             let tempX = this.matrixX + xDir;
-    //             while (tempX != x) {
-    //                 console.log(tempX, y, xDir)
-    //                 if (board[tempX][y] != null) {
-    //                     return false;
-    //                 }
-    //                 tempX += xDir;
-    //             }
-    //             return true;
-    //         } else {
-    //             return false;
-    //         }
-    //     } else {
-    //         return false;
-    //     }
-     }
 }
