@@ -68,10 +68,10 @@ function mouseReleased() {
         landingX = Math.floor(mouseX / SPACING);
         landingY = Math.floor(mouseY / SPACING);
         if (BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX)) {
-            // console.log('can move')
+            console.log('can move')
             BOARD.move(holdingPieceX, holdingPieceY, landingX, landingY)
         } else {
-            // console.log('cant move')
+            console.log('cant move')
         }
         holdingPieceX = -1;
         holdingPieceY = -1;
