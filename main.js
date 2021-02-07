@@ -21,7 +21,7 @@ function setup() {
 
 function draw() {
     BOARD.show();
-    if(locked) {
+    if (locked) {
         BOARD.board[holdingPieceY][holdingPieceX].show() // make holding piece be drawn on top of everything else
     }
 }
@@ -67,9 +67,21 @@ function mouseReleased() {
         locked = false;
         landingX = Math.floor(mouseX / SPACING);
         landingY = Math.floor(mouseY / SPACING);
-        if (BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX)) {
+
+        let canmove = BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX);
+        console.log(holdingPieceX, holdingPieceY)
+        if (canmove == "kingside") {
+            console.log('castles kingside')
+            BOARD.castle(holdingPieceY, holdingPieceX, holdingPieceY, holdingPieceX + 3, true)
+
+        } else if (canmove == 'queenside') {
+            console.log('castles queenside')
+            BOARD.castle(holdingPieceY, holdingPieceX, holdingPieceY, holdingPieceX - 4, false)
+
+        } else if (canmove === true) {
             console.log('can move')
             BOARD.move(holdingPieceX, holdingPieceY, landingX, landingY)
+
         } else {
             console.log('cant move')
         }

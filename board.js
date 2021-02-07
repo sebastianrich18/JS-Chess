@@ -88,6 +88,7 @@ class Board {
     }
 
     castle(kx, ky, rx, ry, isKingSide) {
+        console.log(rx, ry)
         let rook = this.board[rx][ry];
         if (isKingSide) {
             this.move(ky, kx, ky + 2, kx);

@@ -21,13 +21,21 @@ class Piece {
     canMove(board, x, y) {
         console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
         let moves = this.getMoves(board);
-        let included = false
         for (let i = 0; i < moves.length; i++) {
             if (moves[i][0] == x && moves[i][1] == y) {
-                included = true;
+                if (moves[i][2] != undefined && moves[i][2] === true) { // if move is castle king side
+                    console.log('castles kingside')
+                    //board.castle(this.matrixX, this.matrixY, this.matrixX, this.matrixY + 3)
+                    return "kingside"
+                } else if (moves[i][2] != undefined && moves[i][2] === false) { // if move is castle queen side
+                    //board.castle(this.matrixX, this.matrixY, this.matrixX, this.matrixY - 4)
+                    console.log('castles queenside')
+                    return 'queenside'
+                }
+                return true;
             }
         }
-        return included;
+        return false;
     }
 
     isInBounds(x, y) {
@@ -110,6 +118,15 @@ class King extends Piece {
         }
         if (this.isInBounds(x + 1, y - 1) && (board[x + 1][y - 1] == null || board[x + 1][y - 1].color != this.color)) { // back left
             moves.push([x + 1, y - 1])
+        }
+        if (!this.hasMoves && board[x][y + 1] == null && board[x][y + 2] == null && board[x][y + 3].type == 'r' && !board[x][y + 3].hasMoved) { // castle king side
+            moves.push([x, y + 2, true]);
+            moves.push([x, y + 3, true])
+        }
+        if (!this.hasMoves && board[x][y - 1] == null && board[x][y - 2] == null && board[x][y - 3] == null && board[x][y - 4].type == 'r' && !board[x][y - 4].hasMoved) { // castle king side
+            moves.push([x, y - 2, false]);
+            moves.push([x, y - 3, false]);
+            moves.push([x, y - 4, false]);
         }
 
 
