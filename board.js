@@ -159,11 +159,11 @@ class Board {
         console.log(piece)
         console.log(landingRow, landingCol)
         console.log(this.matrix)
-        // this.matrix[piece.matrixRow][piece.matrixCol] = null;
+        this.matrix[piece.matrixRow][piece.matrixCol] = null;
         piece.matrixRow = ladningRow;
         piece.matrixCol = landingCol;
         piece.hasMoved = true;
-        // this.matrix[ladningRow][landingCol] = piece;
+        this.matrix[ladningRow][landingCol] = piece;
     }
 
     castle(kx, ky, rx, ry, isKingSide) {

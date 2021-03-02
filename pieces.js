@@ -11,7 +11,7 @@ class Piece {
     }
 
     show() {
-        if (!locked) {
+        if (!holdingPiece) {
             this.absY = this.matrixRow * SPACING;
             this.absX = this.matrixCol * SPACING;
         }

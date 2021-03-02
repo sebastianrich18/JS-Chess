@@ -1,7 +1,7 @@
 const WIDTH = 600
 const SPACING = WIDTH / 8;
 const BOARD = new Board();
-let locked = false
+let holdingPiece = false
 let overPiece = false;
 let holdingPieceRow;
 let holdingPieceCol;
@@ -29,7 +29,7 @@ function mousePressed() {
         let mouseMatrixCol = Math.floor(mouseX / SPACING)
 
 
-        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !locked) {
+        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !holdingPiece) {
             // console.log(mouseMatrixX, mouseMatrixY)
             overPiece = true;
             holdingPieceRow = mouseMatrixRow;
@@ -39,28 +39,29 @@ function mousePressed() {
             overPiece = false;
         }
         if (overPiece) {
-            locked = true;
+            holdingPiece = true;
             holdingPieceRow = mouseMatrixRow;
             holdingPieceCol = mouseMatrixCol;
 
         } else {
-            locked = false;
+            holdingPiece = false;
         }
     }
 }
 
 function mouseDragged() {
-    if (locked) {
+    if (holdingPiece) {
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absX = mouseX - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absY = mouseY - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].show()
         console.log(BOARD.matrix)
+        console.log(BOARD.matrix[5][6])
     }
 }
 
 function mouseReleased() {
-    if (locked) {
-        locked = false;
+    if (holdingPiece) {
+        holdingPiece = false;
         landingCol = Math.floor(mouseX / SPACING);
         landingRow = Math.floor(mouseY / SPACING);
         console.log(BOARD.matrix)
