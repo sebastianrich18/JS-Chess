@@ -89,12 +89,10 @@ class Board {
     movePutsKingInCheck(piece, landingRow, landingCol) {
         console.log('checking for check')
         // console.log(piece, landingRow, landingCol)
-        console.log(this.matrix)
-        let newBoard = new Board(this.matrix)
         console.log('moveing on new board')
-        newBoard.move(piece, landingRow, landingCol)
-        let oppMoves = newBoard.getOpponentMoves(piece.color, newBoard.matrix);
-        let kingLocation = newBoard.findKing(piece.color)
+        this.move(piece.matrixRow, piece.matrixCol, landingRow, landingCol)
+        let oppMoves = this.getOpponentMoves(piece.color);
+        let kingLocation = this.findKing(piece.color)
         // console.log(kingLocation)
         for (let i = 0; i < oppMoves.length; i++) {
             if (oppMoves[i][0] == kingLocation[0] && oppMoves[i][1] == kingLocation[1]) {
@@ -105,14 +103,14 @@ class Board {
         return false;
     }
 
-    getOpponentMoves(color, matrix) {
+    getOpponentMoves(color) {
         console.log('checking oppponent moves')
         let moves = [];
-        for (let row = 0; row < matrix.length; row++) {
-            for (let col = 0; col < matrix.length; col++) {
-                let piece = matrix[row][col];
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix.length; col++) {
+                let piece = this.matrix[row][col];
                 if (piece != null && piece.color != color) {
-                    piece.getMoves(matrix).forEach(m => { // get all moves for every piece
+                    piece.getMoves(this.matrix).forEach(m => { // get all moves for every piece
                         moves.push(m);
                     });
                 }
@@ -154,15 +152,15 @@ class Board {
         return true;
     }
 
-    move(piece, ladningRow, landingCol) {
-        console.log('moveing')
-        console.log(piece)
-        console.log(landingRow, landingCol)
-        console.log(this.matrix)
-        this.matrix[piece.matrixRow][piece.matrixCol] = null;
+    move(startingRow, startingCol, ladningRow, landingCol) {
+        console.log()
+        console.log('moveing from ', startingRow, startingCol, " to ", landingRow, landingCol)
+        // console.log(JSON.stringify(this.matrix))
+        let piece = this.matrix[startingRow][startingCol]
         piece.matrixRow = ladningRow;
         piece.matrixCol = landingCol;
         piece.hasMoved = true;
+        this.matrix[startingRow][startingCol] = null;
         this.matrix[ladningRow][landingCol] = piece;
     }
 

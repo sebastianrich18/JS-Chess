@@ -20,8 +20,8 @@ class Piece {
 
     canMove(board, landingRow, landingCol) {
         console.log("checking move from ", this.matrixRow, this.matrixCol, " to ", landingRow, landingCol)
-        console.log(BOARD.matrix)
-        let moves = this.getMoves(board);
+        let newBoard = new Board(board.matrix)
+        let moves = this.getMoves(newBoard);
         for (let i = 0; i < moves.length; i++) {
             if (moves[i][0] == landingRow && moves[i][1] == landingCol) { // move is reachable
 
@@ -33,7 +33,7 @@ class Piece {
                     console.log('castles queenside')
                     return 'queenside'
                 }
-                if (!BOARD.movePutsKingInCheck(this, landingRow, landingCol)) {
+                if (!newBoard.movePutsKingInCheck(this, landingRow, landingCol)) {
                     console.log('move doesnt put king in check')
                     return true;
                     

@@ -54,8 +54,6 @@ function mouseDragged() {
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absX = mouseX - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absY = mouseY - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].show()
-        console.log(BOARD.matrix)
-        console.log(BOARD.matrix[5][6])
     }
 }
 
@@ -83,8 +81,8 @@ function mouseReleased() {
 
             // console.log('landing row: ' + landingRow)
             // console.log('landing col: ' + landingCol)
-            console.log(BOARD.matrix)
-            BOARD.move(BOARD.matrix[holdingPieceRow][holdingPieceCol], landingRow, landingCol)
+            console.log(JSON.stringify(BOARD.matrix))
+            BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
 
         } else {
             console.log('cant move')
