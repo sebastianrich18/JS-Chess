@@ -3,8 +3,8 @@ const SPACING = WIDTH / 8;
 const BOARD = new Board();
 let locked = false
 let overPiece = false;
-let holdingPieceX;
-let holdingPieceY;
+let holdingPieceRow;
+let holdingPieceCol;
 
 function preload() {
     let names = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'wb', 'wk', 'wn', 'wp', 'wq', 'wr']
@@ -21,72 +21,74 @@ function setup() {
 
 function draw() {
     BOARD.show();
-    if (locked) {
-        BOARD.board[holdingPieceY][holdingPieceX].show() // make holding piece be drawn on top of everything else
-    }
 }
 
 function mousePressed() {
     if (mouseX < WIDTH && mouseY < WIDTH) {
-        let mouseMatrixX = Math.floor(mouseX / SPACING);
-        let mouseMatrixY = Math.floor(mouseY / SPACING)
+        let mouseMatrixRow = Math.floor(mouseY / SPACING);
+        let mouseMatrixCol = Math.floor(mouseX / SPACING)
 
-        // console.log(mouseMatrixX, mouseMatrixY)
 
-        if (BOARD.board[mouseMatrixY][mouseMatrixX] != null && !locked) {
+        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !locked) {
             // console.log(mouseMatrixX, mouseMatrixY)
             overPiece = true;
-            holdingPieceX = mouseMatrixY;
-            holdingPieceY = mouseMatrixX
+            holdingPieceRow = mouseMatrixRow;
+            holdingPieceCol = mouseMatrixCol
 
         } else {
             overPiece = false;
         }
         if (overPiece) {
             locked = true;
-            holdingPieceX = mouseMatrixX;
-            holdingPieceY = mouseMatrixY;
+            holdingPieceRow = mouseMatrixRow;
+            holdingPieceCol = mouseMatrixCol;
 
         } else {
             locked = false;
         }
     }
-
 }
 
-function mouseDragged(e) {
+function mouseDragged() {
     if (locked) {
-        BOARD.board[holdingPieceY][holdingPieceX].absX = mouseY - (SPACING / 2);
-        BOARD.board[holdingPieceY][holdingPieceX].absY = mouseX - (SPACING / 2);
-
+        BOARD.matrix[holdingPieceRow][holdingPieceCol].absX = mouseX - (SPACING / 2);
+        BOARD.matrix[holdingPieceRow][holdingPieceCol].absY = mouseY - (SPACING / 2);
+        BOARD.matrix[holdingPieceRow][holdingPieceCol].show()
+        console.log(BOARD.matrix)
     }
 }
 
 function mouseReleased() {
     if (locked) {
         locked = false;
-        landingX = Math.floor(mouseX / SPACING);
-        landingY = Math.floor(mouseY / SPACING);
+        landingCol = Math.floor(mouseX / SPACING);
+        landingRow = Math.floor(mouseY / SPACING);
+        console.log(BOARD.matrix)
 
-        let canmove = BOARD.board[holdingPieceY][holdingPieceX].canMove(BOARD.board, landingY, landingX);
-        console.log(holdingPieceX, holdingPieceY)
+        let canmove = BOARD.matrix[holdingPieceRow][holdingPieceCol].canMove(BOARD.matrix, landingRow, landingCol);
+
         if (canmove == "kingside") {
             console.log('castles kingside')
-            BOARD.castle(holdingPieceY, holdingPieceX, holdingPieceY, holdingPieceX + 3, true)
+            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceCol, holdingPieceRow + 3, true)
 
         } else if (canmove == 'queenside') {
             console.log('castles queenside')
-            BOARD.castle(holdingPieceY, holdingPieceX, holdingPieceY, holdingPieceX - 4, false)
+            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceCol, holdingPieceRow - 4, false)
 
         } else if (canmove === true) {
-            console.log('can move')
-            BOARD.move(holdingPieceX, holdingPieceY, landingX, landingY)
+            console.log('can move on real board')
+            // console.log('holding piece row: ' + holdingPieceRow)
+            // console.log('holding piece col: ' + holdingPieceCol)
+
+            // console.log('landing row: ' + landingRow)
+            // console.log('landing col: ' + landingCol)
+            console.log(BOARD.matrix)
+            BOARD.move(BOARD.matrix[holdingPieceRow][holdingPieceCol], landingRow, landingCol)
 
         } else {
             console.log('cant move')
         }
-        holdingPieceX = -1;
-        holdingPieceY = -1;
+        holdingPieceRow = -1;
+        holdingPieceCol = -1;
     }
-
 }

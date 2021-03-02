@@ -1,9 +1,17 @@
 class Board {
-    board = []
+
+    constructor(matrix) {
+        if (matrix instanceof Array) {
+            this.matrix = []
+            matrix.forEach(arr => { this.matrix.push(arr) })
+        } else {
+            this.matrix = []
+        }
+    }
 
     init() {
         for (let i = 0; i < 8; i++) {
-            this.board.push([null, null, null, null, null, null, null, null])
+            this.matrix.push([null, null, null, null, null, null, null, null])
         }
 
         let startingPos =
@@ -11,34 +19,34 @@ class Board {
             ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', 'wk', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
             ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn', 'wr']]
 
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if (startingPos[i][j] != '') {
-                    let color = startingPos[i][j].split('')[0];
-                    let type = startingPos[i][j].split('')[1]
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                if (startingPos[row][col] != '') {
+                    let color = startingPos[row][col].split('')[0];
+                    let type = startingPos[row][col].split('')[1]
                     switch (type) {
                         case 'p':
-                            this.board[i][j] = new Pawn(color, type, i, j);
+                            this.matrix[row][col] = new Pawn(color, type, row, col);
                             break;
                         case 'k':
-                            this.board[i][j] = new King(color, type, i, j);
+                            this.matrix[row][col] = new King(color, type, row, col);
                             break;
                         case 'b':
-                            this.board[i][j] = new Bishop(color, type, i, j);
+                            this.matrix[row][col] = new Bishop(color, type, row, col);
                             break;
                         case 'q':
-                            this.board[i][j] = new Queen(color, type, i, j);
+                            this.matrix[row][col] = new Queen(color, type, row, col);
                             break;
                         case 'r':
-                            this.board[i][j] = new Rook(color, type, i, j);
+                            this.matrix[row][col] = new Rook(color, type, row, col);
                             break;
                         case 'n':
-                            this.board[i][j] = new Knight(color, type, i, j);
+                            this.matrix[row][col] = new Knight(color, type, row, col);
                             break;
                     }
                 }
@@ -48,58 +56,129 @@ class Board {
 
     show() {
 
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if (i % 2 == 0) {
-                    if (j % 2 == 0) {
-                        fill(255)
-                    } else {
-                        fill(0)
-                    }
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                if ((row + col) % 2 == 0) {
+                    fill(255)
                 } else {
-                    if (j % 2 == 0) {
-                        fill(0)
-                    } else {
-                        fill(255)
-                    }
+                    fill(0)
                 }
-                rect(SPACING * i, SPACING * j, SPACING, SPACING);
+                rect(SPACING * row, SPACING * col, SPACING, SPACING);
             }
         }
-        for (let x = 0; x < this.board.length; x++) {
-            for (let y = 0; y < this.board.length; y++) {
-
-                if (this.board[x][y] instanceof Piece) {
-                    this.board[x][y].show()
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix.length; col++) {
+                if (this.matrix[row][col] instanceof Piece) {
+                    this.matrix[row][col].show()
                 }
             }
         }
     }
 
-    move(x1, y1, x2, y2) {
-        let piece = this.board[y1][x1];
-        // console.log(y1, x1)
-        // console.log(piece)
-        piece.matrixX = y2;
-        piece.matrixY = x2;
+
+    findKing(color) {
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix.length; col++) {
+                if (this.matrix[row][col] != null && this.matrix[row][col].color == color && this.matrix[row][col].type == 'k') {
+                    return [row, col]
+                }
+            }
+        }
+    }
+
+    movePutsKingInCheck(piece, landingRow, landingCol) {
+        console.log('checking for check')
+        // console.log(piece, landingRow, landingCol)
+        console.log(this.matrix)
+        let newBoard = new Board(this.matrix)
+        console.log('moveing on new board')
+        newBoard.move(piece, landingRow, landingCol)
+        let oppMoves = newBoard.getOpponentMoves(piece.color, newBoard.matrix);
+        let kingLocation = newBoard.findKing(piece.color)
+        // console.log(kingLocation)
+        for (let i = 0; i < oppMoves.length; i++) {
+            if (oppMoves[i][0] == kingLocation[0] && oppMoves[i][1] == kingLocation[1]) {
+                console.log("opponent can play " + oppMoves[i] + " and take your king")
+                return true
+            }
+        }
+        return false;
+    }
+
+    getOpponentMoves(color, matrix) {
+        console.log('checking oppponent moves')
+        let moves = [];
+        for (let row = 0; row < matrix.length; row++) {
+            for (let col = 0; col < matrix.length; col++) {
+                let piece = matrix[row][col];
+                if (piece != null && piece.color != color) {
+                    piece.getMoves(matrix).forEach(m => { // get all moves for every piece
+                        moves.push(m);
+                    });
+                }
+            }
+        }
+        console.log(moves)
+        return moves
+    }
+
+    canCastle(color, isKingSide) {
+        let moves = this.getOpponentMoves(color);
+        let squares = [] // holds squares the king must move thru in order to castle
+        if (color == 'w') {
+            squares.push([7, 4]);
+            if (isKingSide) {
+                squares.push([7, 5]);
+                squares.push([7, 6]);
+            } else {
+                squares.push([7, 3]);
+                squares.push([7, 2]);
+            }
+        } else {
+            squares.push([0, 4])
+            if (isKingSide) {
+                squares.push([0, 5]);
+                squares.push([0, 6]);
+            } else {
+                squares.push([0, 3]);
+                squares.push([0, 2]);
+            }
+        }
+        for (let i = 0; i < moves.length; i++) {
+            for (let j = 0; j < squares.length; j++) {
+                if (moves[i][0] == squares[j][0] && moves[i][1] == squares[j][1]) {
+                    return false
+                }
+            }
+        }
+        return true;
+    }
+
+    move(piece, ladningRow, landingCol) {
+        console.log('moveing')
+        console.log(piece)
+        console.log(landingRow, landingCol)
+        console.log(this.matrix)
+        // this.matrix[piece.matrixRow][piece.matrixCol] = null;
+        piece.matrixRow = ladningRow;
+        piece.matrixCol = landingCol;
         piece.hasMoved = true;
-        this.board[y1][x1] = null;
-        this.board[y2][x2] = piece;
+        // this.matrix[ladningRow][landingCol] = piece;
     }
 
     castle(kx, ky, rx, ry, isKingSide) {
-        console.log(rx, ry)
-        let rook = this.board[rx][ry];
+        // console.log(rx, ry)
+        let rook = this.matrix[rx][ry];
         if (isKingSide) {
             this.move(ky, kx, ky + 2, kx);
             rook.matrixX = kx;
             rook.matrixY = ky + 1;
-            this.board[kx][ky + 1] = rook;
+            this.matrix[kx][ky + 1] = rook;
         } else {
             this.move(ky, kx, ky - 2, kx);
             rook.matrixX = kx;
             rook.matrixY = ky - 1;
-            this.board[kx][ky - 1] = rook;
+            this.matrix[kx][ky - 1] = rook;
         }
         console.log('castles')
     }

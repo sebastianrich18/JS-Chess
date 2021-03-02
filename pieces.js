@@ -1,38 +1,46 @@
 class Piece {
     static imgs = {};
 
-    constructor(color, type, matrixX, matrixY) {
+    constructor(color, type, matrixRow, matrixCol) {
         this.color = color;
         this.type = type;
-        this.matrixX = matrixX;
-        this.matrixY = matrixY;
-        this.absX = matrixX * SPACING;
-        this.absY = matrixY * SPACING;
+        this.matrixRow = matrixRow;
+        this.matrixCol = matrixCol;
+        this.absX = matrixRow * SPACING;
+        this.absY = matrixCol * SPACING;
     }
 
     show() {
         if (!locked) {
-            this.absX = this.matrixX * SPACING;
-            this.absY = this.matrixY * SPACING;
+            this.absY = this.matrixRow * SPACING;
+            this.absX = this.matrixCol * SPACING;
         }
-        image(Piece.imgs[`${this.color}${this.type}`], this.absY, this.absX, SPACING, SPACING)
+        image(Piece.imgs[`${this.color}${this.type}`], this.absX, this.absY, SPACING, SPACING)
     }
 
-    canMove(board, x, y) {
-        console.log('checking move to ', x, y, " from ", this.matrixX, this.matrixY)
+    canMove(board, landingRow, landingCol) {
+        console.log("checking move from ", this.matrixRow, this.matrixCol, " to ", landingRow, landingCol)
+        console.log(BOARD.matrix)
         let moves = this.getMoves(board);
         for (let i = 0; i < moves.length; i++) {
-            if (moves[i][0] == x && moves[i][1] == y) {
+            if (moves[i][0] == landingRow && moves[i][1] == landingCol) { // move is reachable
+
                 if (moves[i][2] != undefined && moves[i][2] === true) { // if move is castle king side
                     console.log('castles kingside')
-                    //board.castle(this.matrixX, this.matrixY, this.matrixX, this.matrixY + 3)
                     return "kingside"
+
                 } else if (moves[i][2] != undefined && moves[i][2] === false) { // if move is castle queen side
-                    //board.castle(this.matrixX, this.matrixY, this.matrixX, this.matrixY - 4)
                     console.log('castles queenside')
                     return 'queenside'
                 }
-                return true;
+                if (!BOARD.movePutsKingInCheck(this, landingRow, landingCol)) {
+                    console.log('move doesnt put king in check')
+                    return true;
+                    
+                } else {
+                    console.log('move puts king in check')
+                    return false
+                }
             }
         }
         return false;
@@ -51,33 +59,33 @@ class Pawn extends Piece {
 
     getMoves(board) {
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let row = this.matrixRow;
+        let col = this.matrixCol;
         if (this.color == 'w') {
-            if (board[x - 1][y] == null) { // forward 1
-                moves.push([x - 1, y]);
+            if (board[row - 1][col] == null) { // forward 1
+                moves.push([row - 1, col]);
             }
-            if (!this.hasMoved && board[x - 1][y] == null && board[x - 2][y] == null) { // forward 2
-                moves.push([x - 2, y]);
+            if (!this.hasMoved && board[row - 1][col] == null && board[row - 2][col] == null) { // forward 2
+                moves.push([row - 2, col]);
             }
-            if (board[x - 1][y - 1] != null && board[x - 1][y - 1].color == 'b') { // takes to the left
-                moves.push([x - 1, y - 1]);
+            if (board[row - 1][col - 1] != null && board[row - 1][col - 1].color == 'b') { // takes to the left
+                moves.push([row - 1, col - 1]);
             }
-            if (board[x - 1][y + 1] != null && board[x - 1][y + 1].color == 'b') { // takes to the right
-                moves.push([x - 1, y + 1]);
+            if (board[row - 1][col + 1] != null && board[row - 1][col + 1].color == 'b') { // takes to the right
+                moves.push([row - 1, col + 1]);
             }
         } else {
-            if (board[x + 1][y] == null) { // forward 1
-                moves.push([x + 1, y]);
+            if (board[row + 1][col] == null) { // forward 1
+                moves.push([row + 1, col]);
             }
-            if (!this.hasMoved && board[x + 1][y] == null && board[x + 2][y] == null) { // forward 2
-                moves.push([x + 2, y]);
+            if (!this.hasMoved && board[row + 1][col] == null && board[row + 2][col] == null) { // forward 2
+                moves.push([row + 2, col]);
             }
-            if (board[x + 1][y - 1] != null && board[x + 1][y - 1].color == 'w') { // takes to the left
-                moves.push([x + 1, y - 1]);
+            if (board[row + 1][col - 1] != null && board[row + 1][col - 1].color == 'w') { // takes to the left
+                moves.push([row + 1, col - 1]);
             }
-            if (board[x + 1][y + 1] != null && board[x + 1][y + 1].color == 'w') { // takes to the right
-                moves.push([x + 1, y + 1]);
+            if (board[row + 1][col + 1] != null && board[row + 1][col + 1].color == 'w') { // takes to the right
+                moves.push([row + 1, col + 1]);
             }
         }
         return moves;
@@ -91,9 +99,10 @@ class King extends Piece {
     }
 
     getMoves(board) {
+        // console.log('checking king moves')
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let x = this.matrixRow;
+        let y = this.matrixCol;
 
         if (this.isInBounds(x, y + 1) && (board[x][y + 1] == null || board[x][y + 1].color != this.color)) { // right
             moves.push([x, y + 1])
@@ -119,18 +128,21 @@ class King extends Piece {
         if (this.isInBounds(x + 1, y - 1) && (board[x + 1][y - 1] == null || board[x + 1][y - 1].color != this.color)) { // back left
             moves.push([x + 1, y - 1])
         }
-        if (!this.hasMoves && board[x][y + 1] == null && board[x][y + 2] == null && board[x][y + 3].type == 'r' && !board[x][y + 3].hasMoved) { // castle king side
-            moves.push([x, y + 2, true]);
-            moves.push([x, y + 3, true])
+        if (!this.hasMoved && board[x][y + 1] == null && board[x][y + 2] == null && board[x][y + 3].type == 'r' && !board[x][y + 3].hasMoved) { // castle king side
+            if (BOARD.canCastle(this.color, true)) {
+                moves.push([x, y + 2, true]);
+                moves.push([x, y + 3, true]);
+            }
         }
-        if (!this.hasMoves && board[x][y - 1] == null && board[x][y - 2] == null && board[x][y - 3] == null && board[x][y - 4].type == 'r' && !board[x][y - 4].hasMoved) { // castle king side
-            moves.push([x, y - 2, false]);
-            moves.push([x, y - 3, false]);
-            moves.push([x, y - 4, false]);
+        if (!this.hasMoved && board[x][y - 1] == null && board[x][y - 2] == null && board[x][y - 3] == null && board[x][y - 4].type == 'r' && !board[x][y - 4].hasMoved) { // castle king side
+            if (BOARD.canCastle(this.color, false)) {
+                moves.push([x, y - 2, false]);
+                moves.push([x, y - 3, false]);
+                moves.push([x, y - 4, false]);
+            }
         }
 
-
-        console.log(moves)
+        // console.log(moves)
         return moves;
     }
 }
@@ -142,8 +154,8 @@ class Queen extends Piece {
 
     getMoves(board) {
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let x = this.matrixRow;
+        let y = this.matrixCol;
         for (let i = 1; i < board.length; i++) { // front left
             if (!this.isInBounds(x - i, y - i)) {
                 break;
@@ -245,8 +257,8 @@ class Bishop extends Piece {
 
     getMoves(board) {
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let x = this.matrixRow;
+        let y = this.matrixCol;
         for (let i = 1; i < board.length; i++) { // front left
             if (!this.isInBounds(x - i, y - i)) {
                 break;
@@ -310,8 +322,8 @@ class Knight extends Piece {
 
     getMoves(board) {
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let x = this.matrixRow;
+        let y = this.matrixCol;
         moves.push([x + 1, y + 2]);
         moves.push([x - 1, y + 2]);
         moves.push([x + 1, y - 2]);
@@ -331,8 +343,8 @@ class Rook extends Piece {
 
     getMoves(board) {
         let moves = [];
-        let x = this.matrixX;
-        let y = this.matrixY;
+        let x = this.matrixRow;
+        let y = this.matrixCol;
         for (let i = x - 1; i >= 0; i--) { // forward
             if (board[i][y] == null) {
                 moves.push([i, y]);
