@@ -60,9 +60,9 @@ function mouseDragged() {
 function mouseReleased() {
     if (holdingPiece) {
         holdingPiece = false;
-        landingCol = Math.floor(mouseX / SPACING);
-        landingRow = Math.floor(mouseY / SPACING);
-        console.log(BOARD.matrix)
+        let landingCol = Math.floor(mouseX / SPACING);
+        let landingRow = Math.floor(mouseY / SPACING);
+        // console.log(BOARD.matrix)
 
         let canmove = BOARD.matrix[holdingPieceRow][holdingPieceCol].canMove(BOARD.matrix, landingRow, landingCol);
 
@@ -74,15 +74,15 @@ function mouseReleased() {
             console.log('castles queenside')
             BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceCol, holdingPieceRow - 4, false)
 
-        } else if (canmove === true) {
-            console.log('can move on real board')
-            // console.log('holding piece row: ' + holdingPieceRow)
-            // console.log('holding piece col: ' + holdingPieceCol)
+        // } else if (canmove === false) {
+        //     console.log('can move on real board')
+        //     // console.log('holding piece row: ' + holdingPieceRow)
+        //     // console.log('holding piece col: ' + holdingPieceCol)
 
-            // console.log('landing row: ' + landingRow)
-            // console.log('landing col: ' + landingCol)
-            console.log(JSON.stringify(BOARD.matrix))
-            BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
+        //     // console.log('landing row: ' + landingRow)
+        //     // console.log('landing col: ' + landingCol)
+        //     // console.log(JSON.stringify(BOARD.matrix))
+        //     BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
 
         } else {
             console.log('cant move')

@@ -1,11 +1,11 @@
 class Board {
 
     constructor(matrix) {
+        this.matrix = []
         if (matrix instanceof Array) {
-            this.matrix = []
-            matrix.forEach(arr => { this.matrix.push(arr) })
-        } else {
-            this.matrix = []
+            for (const arr of matrix) {
+                this.matrix.push(arr)
+            }
         }
     }
 
@@ -89,7 +89,6 @@ class Board {
     movePutsKingInCheck(piece, landingRow, landingCol) {
         console.log('checking for check')
         // console.log(piece, landingRow, landingCol)
-        console.log('moveing on new board')
         this.move(piece.matrixRow, piece.matrixCol, landingRow, landingCol)
         let oppMoves = this.getOpponentMoves(piece.color);
         let kingLocation = this.findKing(piece.color)
@@ -152,16 +151,16 @@ class Board {
         return true;
     }
 
-    move(startingRow, startingCol, ladningRow, landingCol) {
-        console.log()
+    move(startingRow, startingCol, landingRow, landingCol) {
         console.log('moveing from ', startingRow, startingCol, " to ", landingRow, landingCol)
         // console.log(JSON.stringify(this.matrix))
         let piece = this.matrix[startingRow][startingCol]
-        piece.matrixRow = ladningRow;
+        console.log(landingRow, landingCol)
+        piece.matrixRow = landingRow;
         piece.matrixCol = landingCol;
         piece.hasMoved = true;
         this.matrix[startingRow][startingCol] = null;
-        this.matrix[ladningRow][landingCol] = piece;
+        this.matrix[landingRow][landingCol] = piece;
     }
 
     castle(kx, ky, rx, ry, isKingSide) {
