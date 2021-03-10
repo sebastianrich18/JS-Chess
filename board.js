@@ -1,5 +1,4 @@
 class Board {
-
     constructor(matrix) {
         this.matrix = []
         if (matrix instanceof Array) {
@@ -10,13 +9,12 @@ class Board {
                     if (piece == null) {
                         arr.push(null)
                     } else {
-                        arr.push(Object.assign(Object.create(Object.getPrototypeOf(piece)), piece))
+                        arr.push(Object.assign(Object.create(Object.getPrototypeOf(piece)), piece)) // clones object insted of getting a refrence
                     }
                 }
                 this.matrix.push(arr)
             }
             this.isMain = false
-            console.log(this.matrix)
         }
         if (typeof matrix === "boolean") {
             this.isMain = matrix;
@@ -169,7 +167,7 @@ class Board {
     move(startingRow, startingCol, landingRow, landingCol) {
         // console.log('moveing from ', startingRow, startingCol, " to ", landingRow, landingCol)
         // console.log(JSON.stringify(this.matrix))
-        console.log("before move", this.isMain, JSON.stringify(this.matrix))
+        // console.log("before move", this.isMain, JSON.stringify(this.matrix))
         let piece = this.matrix[startingRow][startingCol]
         console.log("moveing ", piece, ' to ', landingRow, landingCol, ' on board ', this.isMain)
         piece.matrixRow = landingRow;
@@ -177,7 +175,7 @@ class Board {
         piece.hasMoved = true;
         this.matrix[startingRow][startingCol] = null;
         this.matrix[landingRow][landingCol] = piece;
-        console.log("after move", this.isMain, JSON.stringify(this.matrix))
+        // console.log("after move", this.isMain, JSON.stringify(this.matrix))
 
     }
 
