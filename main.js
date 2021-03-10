@@ -1,6 +1,6 @@
 const WIDTH = 600
 const SPACING = WIDTH / 8;
-const BOARD = new Board();
+const BOARD = new Board(true);
 let holdingPiece = false
 let overPiece = false;
 let holdingPieceRow;
@@ -74,18 +74,20 @@ function mouseReleased() {
             console.log('castles queenside')
             BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceRow, holdingPieceCol - 4, false)
 
-        // } else if (canmove === false) {
-        //     console.log('can move on real board')
-        //     // console.log('holding piece row: ' + holdingPieceRow)
-        //     // console.log('holding piece col: ' + holdingPieceCol)
+        } else if (canmove === true) {
+            console.log('moving on main board')
+            // console.log('holding piece row: ' + holdingPieceRow)
+            // console.log('holding piece col: ' + holdingPieceCol)
 
-        //     // console.log('landing row: ' + landingRow)
-        //     // console.log('landing col: ' + landingCol)
-        //     // console.log(JSON.stringify(BOARD.matrix))
-        //     BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
+            // console.log('landing row: ' + landingRow)
+            // console.log('landing col: ' + landingCol)
+            // console.log(JSON.stringify(BOARD.matrix))
+            BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
 
-        } else {
+        } else if (canmove === false){
             console.log('cant move')
+        } else {
+            console.log('something went horibly wrong')
         }
         holdingPieceRow = -1;
         holdingPieceCol = -1;

@@ -3,9 +3,23 @@ class Board {
     constructor(matrix) {
         this.matrix = []
         if (matrix instanceof Array) {
-            for (const arr of matrix) {
+            for (let row=0; row<matrix.length; row++) {
+                let arr = []
+                for (let col=0; col<matrix.length; col++) {
+                    let piece = matrix[row][col];
+                    if (piece == null) {
+                        arr.push(null)
+                    } else {
+                        arr.push(Object.assign(Object.create(Object.getPrototypeOf(piece)), piece))
+                    }
+                }
                 this.matrix.push(arr)
             }
+            this.isMain = false
+            console.log(this.matrix)
+        }
+        if (typeof matrix === "boolean") {
+            this.isMain = matrix;
         }
     }
 
@@ -90,6 +104,7 @@ class Board {
         console.log('checking for check')
         // console.log(piece, landingRow, landingCol)
         this.move(piece.matrixRow, piece.matrixCol, landingRow, landingCol)
+        // console.log("in movePuts... ", true, JSON.stringify(BOARD.matrix))
         let oppMoves = this.getOpponentMoves(piece.color);
         let kingLocation = this.findKing(piece.color)
         // console.log(kingLocation)
@@ -115,7 +130,7 @@ class Board {
                 }
             }
         }
-        console.log(moves)
+        // console.log(moves)
         return moves
     }
 
@@ -152,27 +167,29 @@ class Board {
     }
 
     move(startingRow, startingCol, landingRow, landingCol) {
-        console.log('moveing from ', startingRow, startingCol, " to ", landingRow, landingCol)
+        // console.log('moveing from ', startingRow, startingCol, " to ", landingRow, landingCol)
         // console.log(JSON.stringify(this.matrix))
+        console.log("before move", this.isMain, JSON.stringify(this.matrix))
         let piece = this.matrix[startingRow][startingCol]
-        console.log(landingRow, landingCol)
+        console.log("moveing ", piece, ' to ', landingRow, landingCol, ' on board ', this.isMain)
         piece.matrixRow = landingRow;
         piece.matrixCol = landingCol;
         piece.hasMoved = true;
         this.matrix[startingRow][startingCol] = null;
         this.matrix[landingRow][landingCol] = piece;
+        console.log("after move", this.isMain, JSON.stringify(this.matrix))
+
     }
 
     castle(kx, ky, rx, ry, isKingSide) {
-        console.log(rx, ry)
-        let rook = this.matrix[rx][ry];
-        console.log(kx, ky)
-        if (isKingSide) { 
-            this.move(kx, ky, kx, ky + 2);
-            this.move(rx, ry, rx, ry - 2)
+        // console.log(rx, ry)
+        // console.log(kx, ky)
+        if (isKingSide) {
+            BOARD.move(kx, ky, kx, ky + 2);
+            BOARD.move(rx, ry, rx, ry - 2)
         } else {
-            this.move(kx, ky, kx, ky - 2); 
-            this.move(rx, ry, rx, ry + 3)
+            BOARD.move(kx, ky, kx, ky - 2);
+            BOARD.move(rx, ry, rx, ry + 3)
         }
         console.log('castles')
     }

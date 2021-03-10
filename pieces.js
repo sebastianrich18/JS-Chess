@@ -2,12 +2,12 @@ class Piece {
     static imgs = {};
 
     constructor(color, type, matrixRow, matrixCol) {
-        this.color = color;
-        this.type = type;
-        this.matrixRow = matrixRow;
-        this.matrixCol = matrixCol;
-        this.absX = matrixRow * SPACING;
-        this.absY = matrixCol * SPACING;
+            this.color = color;
+            this.type = type;
+            this.matrixRow = matrixRow;
+            this.matrixCol = matrixCol;
+            this.absX = matrixRow * SPACING;
+            this.absY = matrixCol * SPACING;
     }
 
     show() {
@@ -21,6 +21,7 @@ class Piece {
     canMove(matrix, landingRow, landingCol) {
         console.log("checking move from ", this.matrixRow, this.matrixCol, " to ", landingRow, landingCol)
         let newBoard = new Board(matrix)
+        // console.log(JSON.stringify(newBoard.matrix))
         let moves = this.getMoves(newBoard.matrix);
         for (let i = 0; i < moves.length; i++) {
             if (moves[i][0] == landingRow && moves[i][1] == landingCol) { // move is reachable
