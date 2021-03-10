@@ -68,11 +68,11 @@ function mouseReleased() {
 
         if (canmove == "kingside") {
             console.log('castles kingside')
-            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceCol, holdingPieceRow + 3, true)
+            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceRow, holdingPieceCol + 3, true)
 
         } else if (canmove == 'queenside') {
             console.log('castles queenside')
-            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceCol, holdingPieceRow - 4, false)
+            BOARD.castle(holdingPieceRow, holdingPieceCol, holdingPieceRow, holdingPieceCol - 4, false)
 
         // } else if (canmove === false) {
         //     console.log('can move on real board')

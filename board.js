@@ -164,18 +164,15 @@ class Board {
     }
 
     castle(kx, ky, rx, ry, isKingSide) {
-        // console.log(rx, ry)
+        console.log(rx, ry)
         let rook = this.matrix[rx][ry];
-        if (isKingSide) {
-            this.move(ky, kx, ky + 2, kx);
-            rook.matrixX = kx;
-            rook.matrixY = ky + 1;
-            this.matrix[kx][ky + 1] = rook;
+        console.log(kx, ky)
+        if (isKingSide) { 
+            this.move(kx, ky, kx, ky + 2);
+            this.move(rx, ry, rx, ry - 2)
         } else {
-            this.move(ky, kx, ky - 2, kx);
-            rook.matrixX = kx;
-            rook.matrixY = ky - 1;
-            this.matrix[kx][ky - 1] = rook;
+            this.move(kx, ky, kx, ky - 2); 
+            this.move(rx, ry, rx, ry + 3)
         }
         console.log('castles')
     }
