@@ -1,7 +1,7 @@
 const WIDTH = 600
 const SPACING = WIDTH / 8;
 const BOARD = new Board(true);
-let holdingPiece = false
+let isHoldingPiece = false
 let overPiece = false;
 let holdingPieceRow;
 let holdingPieceCol;
@@ -15,6 +15,8 @@ function preload() {
 
 function setup() {
     createCanvas(WIDTH, WIDTH)
+    noStroke()
+    ellipseMode(CENTER)
     BOARD.init();
 
 }
@@ -29,7 +31,7 @@ function mousePressed() {
         let mouseMatrixCol = Math.floor(mouseX / SPACING)
 
 
-        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !holdingPiece) {
+        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !isHoldingPiece) {
             // console.log(mouseMatrixX, mouseMatrixY)
             overPiece = true;
             holdingPieceRow = mouseMatrixRow;
@@ -39,18 +41,17 @@ function mousePressed() {
             overPiece = false;
         }
         if (overPiece) {
-            holdingPiece = true;
+            isHoldingPiece = true;
             holdingPieceRow = mouseMatrixRow;
             holdingPieceCol = mouseMatrixCol;
-
         } else {
-            holdingPiece = false;
+            isHoldingPiece = false;
         }
     }
 }
 
 function mouseDragged() {
-    if (holdingPiece) {
+    if (isHoldingPiece) {
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absX = mouseX - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absY = mouseY - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].show()
@@ -58,8 +59,8 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
-    if (holdingPiece) {
-        holdingPiece = false;
+    if (isHoldingPiece) {
+        isHoldingPiece = false;
         let landingCol = Math.floor(mouseX / SPACING);
         let landingRow = Math.floor(mouseY / SPACING);
         // console.log(BOARD.matrix)

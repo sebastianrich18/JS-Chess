@@ -2,20 +2,21 @@ class Piece {
     static imgs = {};
 
     constructor(color, type, matrixRow, matrixCol) {
-            this.color = color;
-            this.type = type;
-            this.matrixRow = matrixRow;
-            this.matrixCol = matrixCol;
-            this.absX = matrixRow * SPACING;
-            this.absY = matrixCol * SPACING;
+        this.color = color;
+        this.type = type;
+        this.matrixRow = matrixRow;
+        this.matrixCol = matrixCol;
+        this.absX = matrixRow * SPACING;
+        this.absY = matrixCol * SPACING;
     }
 
     show() {
-        if (!holdingPiece) {
+        if (!isHoldingPiece) {
             this.absY = this.matrixRow * SPACING;
             this.absX = this.matrixCol * SPACING;
         }
         image(Piece.imgs[`${this.color}${this.type}`], this.absX, this.absY, SPACING, SPACING)
+
     }
 
     canMove(matrix, landingRow, landingCol) {
@@ -46,10 +47,6 @@ class Piece {
         }
         return false;
     }
-
-    isInBounds(x, y) {
-        return (x < 8 && x >= 0 && y < 8 && y >= 0);
-    }
 }
 
 class Pawn extends Piece {
@@ -62,7 +59,6 @@ class Pawn extends Piece {
         let moves = [];
         let row = this.matrixRow;
         let col = this.matrixCol;
-        // console.log(row, col)
         if (this.color == 'w') {
             if (matrix[row - 1][col] == null) { // forward 1
                 moves.push([row - 1, col]);
@@ -101,33 +97,32 @@ class King extends Piece {
     }
 
     getMoves(board) {
-        // console.log('checking king moves')
         let moves = [];
         let x = this.matrixRow;
         let y = this.matrixCol;
 
-        if (this.isInBounds(x, y + 1) && (board[x][y + 1] == null || board[x][y + 1].color != this.color)) { // right
+        if (isInBounds(x, y + 1) && (board[x][y + 1] == null || board[x][y + 1].color != this.color)) { // right
             moves.push([x, y + 1])
         }
-        if (this.isInBounds(x, y - 1) && (board[x][y - 1] == null || board[x][y].color != this.color)) { // left
+        if (isInBounds(x, y - 1) && (board[x][y - 1] == null || board[x][y].color != this.color)) { // left
             moves.push([x, y - 1])
         }
-        if (this.isInBounds(x + 1, y) && (board[x + 1][y] == null || board[x + 1][y].color != this.color)) { // down
+        if (isInBounds(x + 1, y) && (board[x + 1][y] == null || board[x + 1][y].color != this.color)) { // down
             moves.push([x + 1, y])
         }
-        if (this.isInBounds(x - 1, y) && (board[x - 1][y] == null || board[x - 1][y].color != this.color)) { // up
+        if (isInBounds(x - 1, y) && (board[x - 1][y] == null || board[x - 1][y].color != this.color)) { // up
             moves.push([x - 1, y])
         }
-        if (this.isInBounds(x - 1, y - 1) && (board[x - 1][y - 1] == null || board[x - 1][y - 1].color != this.color)) { // front left
+        if (isInBounds(x - 1, y - 1) && (board[x - 1][y - 1] == null || board[x - 1][y - 1].color != this.color)) { // front left
             moves.push([x - 1, y - 1])
         }
-        if (this.isInBounds(x - 1, y + 1) && (board[x - 1][y + 1] == null || board[x - 1][y + 1].color != this.color)) { // front right
+        if (isInBounds(x - 1, y + 1) && (board[x - 1][y + 1] == null || board[x - 1][y + 1].color != this.color)) { // front right
             moves.push([x - 1, y + 1])
         }
-        if (this.isInBounds(x + 1, y + 1) && (board[x + 1][y + 1] == null || board[x + 1][y + 1].color != this.color)) { // back right
+        if (isInBounds(x + 1, y + 1) && (board[x + 1][y + 1] == null || board[x + 1][y + 1].color != this.color)) { // back right
             moves.push([x + 1, y + 1])
         }
-        if (this.isInBounds(x + 1, y - 1) && (board[x + 1][y - 1] == null || board[x + 1][y - 1].color != this.color)) { // back left
+        if (isInBounds(x + 1, y - 1) && (board[x + 1][y - 1] == null || board[x + 1][y - 1].color != this.color)) { // back left
             moves.push([x + 1, y - 1])
         }
         if (!this.hasMoved && board[x][y + 1] == null && board[x][y + 2] == null && board[x][y + 3].type == 'r' && !board[x][y + 3].hasMoved) { // castle king side
@@ -144,7 +139,6 @@ class King extends Piece {
             }
         }
 
-        // console.log(moves)
         return moves;
     }
 }
@@ -159,7 +153,7 @@ class Queen extends Piece {
         let x = this.matrixRow;
         let y = this.matrixCol;
         for (let i = 1; i < matrix.length; i++) { // front left
-            if (!this.isInBounds(x - i, y - i)) {
+            if (!isInBounds(x - i, y - i)) {
                 break;
             }
             if (matrix[x - i][y - i] == null) {
@@ -167,12 +161,12 @@ class Queen extends Piece {
             } else {
                 if (matrix[x - i][y - i].color != this.color) {
                     moves.push([x - i, y - i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < matrix.length; i++) { // front right
-            if (!this.isInBounds(x - i, y + i)) {
+            if (!isInBounds(x - i, y + i)) {
                 break;
             }
             if (matrix[x - i][y + i] == null) {
@@ -180,12 +174,12 @@ class Queen extends Piece {
             } else {
                 if (matrix[x - i][y + i].color != this.color) {
                     moves.push([x - i, y + i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < matrix.length; i++) { // back left
-            if (!this.isInBounds(x + i, y - i)) {
+            if (!isInBounds(x + i, y - i)) {
                 break;
             }
             if (matrix[x + i][y - i] == null) {
@@ -193,12 +187,12 @@ class Queen extends Piece {
             } else {
                 if (matrix[x + i][y - i].color != this.color) {
                     moves.push([x + i, y - i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < matrix.length; i++) { // back right
-            if (!this.isInBounds(x + i, y + i)) {
+            if (!isInBounds(x + i, y + i)) {
                 break;
             }
             if (matrix[x + i][y + i] == null) {
@@ -206,9 +200,9 @@ class Queen extends Piece {
             } else {
                 if (matrix[x + i][y + i].color != this.color) {
                     moves.push([x + i, y + i]);
-                    break;
                 }
             }
+            break;
         }
 
         for (let i = x - 1; i >= 0; i--) { // forward
@@ -217,8 +211,8 @@ class Queen extends Piece {
             } else {
                 if (matrix[i][y].color != this.color) {
                     moves.push([i, y]);
-                    break
                 }
+                break;
             }
         }
         for (let i = x + 1; i < matrix.length; i++) { // backward
@@ -235,8 +229,9 @@ class Queen extends Piece {
             if (matrix[x][i] == null) {
                 moves.push([x, i]);
             } else {
-                if (matrix[x][i].color != this.color);
-                moves.push([x, i]);
+                if (matrix[x][i].color != this.color) {
+                    moves.push([x, i]);
+                }
                 break;
             }
         }
@@ -245,8 +240,9 @@ class Queen extends Piece {
             if (matrix[x][i] == null) {
                 moves.push([x, i]);
             } else {
-                (matrix[x][i].color != this.color);
-                moves.push([x, i]);
+                if (matrix[x][i].color != this.color) {
+                    moves.push([x, i]);
+                }
                 break;
             }
         }
@@ -264,7 +260,7 @@ class Bishop extends Piece {
         let x = this.matrixRow;
         let y = this.matrixCol;
         for (let i = 1; i < board.length; i++) { // front left
-            if (!this.isInBounds(x - i, y - i)) {
+            if (!isInBounds(x - i, y - i)) {
                 break;
             }
             if (board[x - i][y - i] == null) {
@@ -272,12 +268,12 @@ class Bishop extends Piece {
             } else {
                 if (board[x - i][y - i].color != this.color) {
                     moves.push([x - i, y - i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < board.length; i++) { // front right
-            if (!this.isInBounds(x - i, y + i)) {
+            if (!isInBounds(x - i, y + i)) {
                 break;
             }
             if (board[x - i][y + i] == null) {
@@ -285,12 +281,12 @@ class Bishop extends Piece {
             } else {
                 if (board[x - i][y + i].color != this.color) {
                     moves.push([x - i, y + i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < board.length; i++) { // back left
-            if (!this.isInBounds(x + i, y - i)) {
+            if (!isInBounds(x + i, y - i)) {
                 break;
             }
             if (board[x + i][y - i] == null) {
@@ -298,12 +294,12 @@ class Bishop extends Piece {
             } else {
                 if (board[x + i][y - i].color != this.color) {
                     moves.push([x + i, y - i]);
-                    break;
                 }
+                break;
             }
         }
         for (let i = 1; i < board.length; i++) { // back right
-            if (!this.isInBounds(x + i, y + i)) {
+            if (!isInBounds(x + i, y + i)) {
                 break;
             }
             if (board[x + i][y + i] == null) {
@@ -311,8 +307,8 @@ class Bishop extends Piece {
             } else {
                 if (board[x + i][y + i].color != this.color) {
                     moves.push([x + i, y + i]);
-                    break;
                 }
+                break;
             }
         }
         return moves;
@@ -324,18 +320,38 @@ class Knight extends Piece {
         super(color, type, x, y);
     }
 
-    getMoves(board) {
+    getMoves(matrix) {
         let moves = [];
         let x = this.matrixRow;
         let y = this.matrixCol;
-        moves.push([x + 1, y + 2]);
-        moves.push([x - 1, y + 2]);
-        moves.push([x + 1, y - 2]);
-        moves.push([x - 1, y - 2]);
-        moves.push([x + 2, y + 1]);
-        moves.push([x - 2, y + 1]);
-        moves.push([x + 2, y - 1]);
-        moves.push([x - 2, y - 1]);
+
+        if (isInBounds(x + 1, y + 2) && (matrix[x + 1][y + 2] == null || matrix[x + 1][y + 2].color != this.color)) {
+            moves.push([x + 1, y + 2])
+        }
+        if (isInBounds(x + 1, y - 2) && (matrix[x + 1][y - 2] == null || matrix[x + 1][y - 2].color != this.color)) {
+            moves.push([x + 1, y - 2])
+        }
+        if (isInBounds(x - 1, y + 2) && (matrix[x - 1][y + 2] == null || matrix[x - 1][y + 2].color != this.color)) {
+            moves.push([x - 1, y + 2])
+        }
+        if (isInBounds(x - 1, y - 2) && (matrix[x - 1][y - 2] == null || matrix[x - 1][y - 2].color != this.color)) {
+            moves.push([x - 1, y - 2])
+        }
+
+        if (isInBounds(x + 2, y + 1) && (matrix[x + 2][y + 1] == null || matrix[x + 2][y + 1].color != this.color)) {
+            moves.push([x + 2, y + 1])
+        }
+        if (isInBounds(x + 2, y - 1) && (matrix[x + 2][y - 1] == null || matrix[x + 2][y - 1].color != this.color)) {
+            moves.push([x + 2, y - 1])
+        }
+        if (isInBounds(x - 2, y + 1) && (matrix[x - 2][y + 1] == null || matrix[x - 2][y + 1].color != this.color)) {
+            moves.push([x - 2, y + 1])
+        }
+        if (isInBounds(x - 2, y - 1) && (matrix[x - 2][y - 1] == null || matrix[x - 2][y - 1].color != this.color)) {
+            moves.push([x - 2, y - 1])
+        }
+
+
         return moves;
     }
 }
@@ -355,16 +371,17 @@ class Rook extends Piece {
             } else {
                 if (board[i][y].color != this.color) {
                     moves.push([i, y]);
-                    break
                 }
+                break
             }
         }
         for (let i = x + 1; i < board.length; i++) { // backward
             if (board[i][y] == null) {
                 moves.push([i, y]);
             } else {
-                if (board[i][y].color != this.color);
-                moves.push([i, y]);
+                if (board[i][y].color != this.color) {
+                    moves.push([i, y]);
+                }
                 break;
             }
         }
@@ -372,8 +389,9 @@ class Rook extends Piece {
             if (board[x][i] == null) {
                 moves.push([x, i]);
             } else {
-                if (board[x][i].color != this.color);
-                moves.push([x, i]);
+                if (board[x][i].color != this.color) {
+                    moves.push([x, i]);
+                }
                 break;
             }
         }
@@ -381,11 +399,16 @@ class Rook extends Piece {
             if (board[x][i] == null) {
                 moves.push([x, i]);
             } else {
-                (board[x][i].color != this.color);
-                moves.push([x, i]);
+                if (board[x][i].color != this.color) {
+                    moves.push([x, i]);
+                }
                 break;
             }
         }
         return moves;
     }
+}
+
+function isInBounds(x, y) {
+    return (x < 8 && x >= 0 && y < 8 && y >= 0);
 }

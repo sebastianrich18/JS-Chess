@@ -1,3 +1,6 @@
+let gotMoves = false
+let possableMoves = []
+let holdingPiece;
 class Board {
     constructor(matrix) {
         this.matrix = []
@@ -73,11 +76,28 @@ class Board {
                 if ((row + col) % 2 == 0) {
                     fill(255)
                 } else {
-                    fill(0)
+                    fill(117, 150, 84)
                 }
                 rect(SPACING * row, SPACING * col, SPACING, SPACING);
             }
         }
+
+        if (isHoldingPiece) {
+
+        
+            if(!gotMoves) {
+                holdingPiece = BOARD.matrix[holdingPieceRow][holdingPieceCol]
+                possableMoves = holdingPiece.getMoves(BOARD.matrix);
+                gotMoves = true;
+            }
+            fill(0, 50)
+            for (let move of possableMoves) {
+                circle(move[1]*SPACING+(SPACING/2), move[0]*SPACING+(SPACING/2), SPACING*.69)
+            }
+        } else {
+            gotMoves = false;
+        }
+
         for (let row = 0; row < this.matrix.length; row++) {
             for (let col = 0; col < this.matrix.length; col++) {
                 if (this.matrix[row][col] instanceof Piece) {
@@ -122,13 +142,14 @@ class Board {
             for (let col = 0; col < this.matrix.length; col++) {
                 let piece = this.matrix[row][col];
                 if (piece != null && piece.color != color) {
-                    piece.getMoves(this.matrix).forEach(m => { // get all moves for every piece
+                    for(let m of piece.getMoves(this.matrix)) { // get all moves for every piece
+                        console.log(piece, m)
                         moves.push(m);
-                    });
+                    }
                 }
             }
         }
-        // console.log(moves)
+        console.log(moves)
         return moves
     }
 
