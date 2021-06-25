@@ -82,9 +82,15 @@ class Board {
             }
         }
 
-        if (isHoldingPiece) {
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix.length; col++) {
+                if (this.matrix[row][col] instanceof Piece) {
+                    this.matrix[row][col].show()
+                }
+            }
+        }
 
-        
+        if (isHoldingPiece) {
             if(!gotMoves) {
                 holdingPiece = BOARD.matrix[holdingPieceRow][holdingPieceCol]
                 possableMoves = holdingPiece.getMoves(BOARD.matrix);
@@ -94,17 +100,11 @@ class Board {
             for (let move of possableMoves) {
                 circle(move[1]*SPACING+(SPACING/2), move[0]*SPACING+(SPACING/2), SPACING*.69)
             }
+            holdingPiece.show()
         } else {
             gotMoves = false;
         }
 
-        for (let row = 0; row < this.matrix.length; row++) {
-            for (let col = 0; col < this.matrix.length; col++) {
-                if (this.matrix[row][col] instanceof Piece) {
-                    this.matrix[row][col].show()
-                }
-            }
-        }
     }
 
 
@@ -143,13 +143,13 @@ class Board {
                 let piece = this.matrix[row][col];
                 if (piece != null && piece.color != color) {
                     for(let m of piece.getMoves(this.matrix)) { // get all moves for every piece
-                        console.log(piece, m)
+                        // console.log(piece, m)
                         moves.push(m);
                     }
                 }
             }
         }
-        console.log(moves)
+        // console.log(moves)
         return moves
     }
 

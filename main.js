@@ -1,12 +1,15 @@
 const WIDTH = 600
 const SPACING = WIDTH / 8;
-const BOARD = new Board(true);
+let BOARD;
 let isHoldingPiece = false
 let overPiece = false;
 let holdingPieceRow;
 let holdingPieceCol;
+let turn;
+
 
 function preload() {
+    BOARD = new Board(true);
     let names = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'wb', 'wk', 'wn', 'wp', 'wq', 'wr']
     names.forEach(n => {
         Piece.imgs[n] = loadImage(`img/${n}.png`);
@@ -18,7 +21,7 @@ function setup() {
     noStroke()
     ellipseMode(CENTER)
     BOARD.init();
-
+    turn = 'w'
 }
 
 function draw() {
@@ -31,7 +34,7 @@ function mousePressed() {
         let mouseMatrixCol = Math.floor(mouseX / SPACING)
 
 
-        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !isHoldingPiece) {
+        if (BOARD.matrix[mouseMatrixRow][mouseMatrixCol] != null && !isHoldingPiece && turn == BOARD.matrix[mouseMatrixRow][mouseMatrixCol].color) {
             // console.log(mouseMatrixX, mouseMatrixY)
             overPiece = true;
             holdingPieceRow = mouseMatrixRow;
@@ -51,7 +54,7 @@ function mousePressed() {
 }
 
 function mouseDragged() {
-    if (isHoldingPiece) {
+    if (isHoldingPiece && turn == BOARD.matrix[holdingPieceRow][holdingPieceCol].color) {
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absX = mouseX - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].absY = mouseY - (SPACING / 2);
         BOARD.matrix[holdingPieceRow][holdingPieceCol].show()
@@ -63,9 +66,21 @@ function mouseReleased() {
         isHoldingPiece = false;
         let landingCol = Math.floor(mouseX / SPACING);
         let landingRow = Math.floor(mouseY / SPACING);
+
+
+
         // console.log(BOARD.matrix)
 
         let canmove = BOARD.matrix[holdingPieceRow][holdingPieceCol].canMove(BOARD.matrix, landingRow, landingCol);
+
+        if (canmove) {
+            console.log('next turn')
+            if (turn == 'w') {
+                turn = 'b';
+            } else if (turn == 'b') {
+                turn = 'w';
+            }
+        }
 
         if (canmove == "kingside") {
             console.log('castles kingside')
@@ -85,12 +100,28 @@ function mouseReleased() {
             // console.log(JSON.stringify(BOARD.matrix))
             BOARD.move(holdingPieceRow, holdingPieceCol, landingRow, landingCol)
 
-        } else if (canmove === false){
+        } else if (canmove === false) {
             console.log('cant move')
         } else {
             console.log('something went horibly wrong')
         }
         holdingPieceRow = -1;
         holdingPieceCol = -1;
+        if (BOARD.matrix[landingRow][landingCol] && BOARD.matrix[landingRow][landingCol].type == 'k') {
+            gameOver(BOARD.matrix[landingRow][landingCol].color);
+            return;
+        }
+    }
+
+}
+
+function gameOver(winner) {
+    if (winner == 'w') {
+        winner == 'white'
+    } else {
+        winner == 'black'
+    }
+    if (confirm(winner + " Wins!\nWould you like to play again?")) {
+        reset()
     }
 }
